@@ -24,25 +24,13 @@ version: '3'
 services:
   sim:
     image: f1tenth_gym_ros
-#    network_mode: "host"
+    network_mode: "host"
     build: ./
-    volumes: 
+    volumes:
       - .:/sim_ws/src/f1tenth_gym_ros
-      - ../zero:/sim_ws/src/zero
+      - ../zero:/sim/src/zero
+      - /tmp/.X11-unix:/tmp/.X11-unix
     environment:
-      - DISPLAY=novnc:0.0
-    networks:
-      - x11
+      - DISPLAY=${DISPLAY}
     stdin_open: true
-    tty: true 
-  novnc:  
-    image: theasp/novnc:latest
-    environment:
-      - DISPLAY_WIDTH=1728
-      - DISPLAY_HEIGHT=972
-    ports:
-      - "8080:8080"
-    networks:
-      - x11
-networks:
-  x11:
+    tty: true

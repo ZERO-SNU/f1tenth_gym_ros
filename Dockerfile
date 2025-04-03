@@ -44,11 +44,23 @@ RUN cd f1tenth_gym && \
 # ros2 gym bridge
 RUN mkdir -p sim_ws/src/f1tenth_gym_ros
 COPY . /sim_ws/src/f1tenth_gym_ros
-RUN source /opt/ros/foxy/setup.bash && \
-    cd sim_ws/ && \
-    apt-get update --fix-missing && \
-    rosdep install -i --from-path src --rosdistro foxy -y && \
-    colcon build
+
+# ZERO dev repository
+RUN mkdir -p /sim_ws/src/zero
+
+# grant execution privilege to all of Python file
+RUN find . -name "*.py" -exec chmod +x {} \;
+
+RUN source /opt/ros/foxy/setup.bash
+RUN cd sim_ws
+RUN apt-get update --fix-missing
+RUN rosdep install -i --from-path src --rosdistro foxy -y
+RUN colcon build --symlink-install
+RUN source /sim_ws/install/local_setup.bash
+
+# set ROS 2 env (in case of bash)
+RUN echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc
+RUN echo "source /sim_ws/install/local_setup.bash" >> ~/.bashrc
 
 WORKDIR '/sim_ws'
 ENTRYPOINT ["/bin/bash"]
