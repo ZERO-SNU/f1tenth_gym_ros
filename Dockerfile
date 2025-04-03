@@ -48,14 +48,15 @@ COPY . /sim_ws/src/f1tenth_gym_ros
 # ZERO dev repository
 RUN mkdir -p /sim_ws/src/zero
 
-# grant execution privilege to all of Python file
-RUN find . -name "*.py" -exec chmod +x {} \;
-
 RUN source /opt/ros/foxy/setup.bash
-RUN cd sim_ws
+
+# grant execution privilege to all of Python file
+RUN find /sim_ws/src -name "*.py" -exec chmod +x {} \;
+
 RUN apt-get update --fix-missing
-RUN rosdep install -i --from-path src --rosdistro foxy -y
-RUN colcon build --symlink-install
+RUN rosdep install -i --from-path /sim_ws/src --rosdistro foxy -y
+RUN cd /sim_ws && \
+    colcon build --symlink-install
 RUN source /sim_ws/install/local_setup.bash
 
 # set ROS 2 env (in case of bash)
