@@ -83,12 +83,37 @@ def generate_launch_description():
         remappings=[('/robot_description', 'opp_robot_description')]
     )
 
+    static_transform_publishers = [
+    Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_tf_pub',
+        arguments=['0', '0', '0', '0', '0', '0', 'map', 'ego_racecar/base_link']
+    ),
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='static_tf_pub_base_to_front_left_wheel',
+            arguments=['-0.5', '0.5', '0', '0', '0', '0', 'map', 'ego_racecar/front_left_wheel']
+        ),
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='static_tf_pub_base_to_front_right_wheel',
+            arguments=['-0.5', '-0.5', '0', '0', '0', '0', 'map', 'ego_racecar/front_right_wheel']
+        ),
+    ]
+
     # finalize
     ld.add_action(rviz_node)
     ld.add_action(bridge_node)
     ld.add_action(nav_lifecycle_node)
     ld.add_action(map_server_node)
     ld.add_action(ego_robot_publisher)
+
+    for i in static_transform_publishers:
+        ld.add_action(i)
+
     if has_opp:
         ld.add_action(opp_robot_publisher)
 
