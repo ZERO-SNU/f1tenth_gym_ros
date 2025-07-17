@@ -43,6 +43,7 @@ def generate_launch_description():
         executable='gym_bridge',
         name='bridge',
         parameters=[config]
+        remappings=[('/ego_racecar/odom', 'odom')]
     )
     rviz_node = Node(
         package='rviz2',
